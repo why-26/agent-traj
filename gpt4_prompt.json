@@ -1,0 +1,31 @@
+ """你是一个 agent 轨迹分析专家。请分析以下 agent 轨迹，判断该轨迹是否存在 overthinking（过度思考），以及属于哪种模式。
+
+## 轨迹信息
+- Benchmark: {source}
+- Task ID: {task_id}
+- 结果: 失败
+- 总步数: {total_steps}
+- 信号值: {signals}
+
+## 每步详情
+{steps_detail}
+
+## 请判断以下三个问题，严格按 JSON 格式输出：
+
+1. 该轨迹是否存在 overthinking？
+   - "Yes": 明显存在冗余步骤，agent 在做无用功
+   - "No": 每一步都有必要，失败是因为任务本身困难或外部约束
+   - "Partial": 部分步骤冗余，但不严重
+
+2. 如果存在 overthinking，属于哪种模式？
+   - "Type_A": 对话循环型——respond→tool→respond 反复确认，本可以批量处理
+   - "Type_B": 机械重试型——同一 tool 反复调用且返回空/相同结果，不调整策略
+   - "Type_C": 推理冗余型——thought 中反复自我否定、过度验证、在多个候选间犹豫
+   - "Type_D": 合理失败型——外部约束导致，agent 行为合理，无 overthinking
+   - "Mixed": 混合多种模式
+   
+3. 从第几步开始出现 overthinking？（如果不存在则填 -1）
+
+请严格按以下 JSON 格式输出，不要有其他内容：
+{{"is_overthinking": "Yes/No/Partial", "pattern": "Type_A/Type_B/Type_C/Type_D/Mixed/None", "start_step": -1, "reason": "一句话解释"}}
+"""

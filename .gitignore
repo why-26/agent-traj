@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Training artifacts
+checkpoints/
+deliberation_controller/checkpoints/
+deliberation_controller/checkpoints_smoke/
+*.pt
+*.pth
+*.ckpt
+*.log
+
+# Generated datasets / distributions
+deliberation_controller/data/*.json
+!deliberation_controller/data/__init__.py
+!deliberation_controller/data/*.py
+
+# Large raw trajectory datasets
+agent 推理轨迹数据集/
+data/*.json
+*.triples.json
+
+# Analysis outputs and temporary files
+sig1_analysis_results_qwen3/
+sig2_analysis_results_gpt4.1/
+sig2_analysis_results_qwen3/
+traj_analysis/
+output.txt
+result_output.txt
+sampled_for_annotation.json
+selected_trajectories.json
+annotations_gpt4.json
+1.txt
+2 次信号覆盖率计算.txt
+
