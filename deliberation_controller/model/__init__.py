@@ -6,10 +6,12 @@ from .controller import (
     DualHeadTemporalAttention,
     compute_multitask_loss,
 )
+from .rule_baseline import RuleBasedController
 
 __all__ = [
     "ACTION_ID_TO_NAME",
     "DeliberationController",
     "DualHeadTemporalAttention",
+    "RuleBasedController",
     "compute_multitask_loss",
 ]

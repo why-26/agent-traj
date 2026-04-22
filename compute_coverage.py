@@ -1,7 +1,7 @@
 import json
 import numpy as np
 
-annotations = json.load(open("annotations_gpt4.json"))
+annotations = json.load(open("annotations_human_corrected.json"))
 
 # ===== 基本统计 =====
 total = len(annotations)

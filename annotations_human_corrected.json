@@ -1,0 +1,1725 @@
+[
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 3,
+    "reason": "agent 在 thought 中反复总结、验证和自我否定，推理冗余明显，导致无效步骤增加",
+    "task_id": 101,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 22,
+    "signals": {
+      "thought_length_mean": 1971.3,
+      "thought_length_var": 1108847.8,
+      "tokens_per_step": 8132.7,
+      "decision_oscillation": 0.908,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 2,
+    "reason": "agent连续多次调用get_order_details工具查找订单，未调整策略，存在机械重试",
+    "task_id": 26,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 7,
+    "signals": {
+      "thought_length_mean": 1714.1,
+      "thought_length_var": 942268.1,
+      "tokens_per_step": 6288.7,
+      "decision_oscillation": 0.823,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "不是同一工具连续无意义调用。Agent是在依次遍历不同的订单（#W3792... #W7181... #W5565...）以寻找发往Texas的订单，属于合理的排查逻辑。每步都在推进，最终失败是因为遗漏了退货意图，属于任务理解错误。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 5,
+    "reason": "agent 在thought中反复总结、重复验证已完成的步骤，推理冗余明显，导致无效信息累积",
+    "task_id": 10,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 9,
+    "signals": {
+      "thought_length_mean": 1621.8,
+      "thought_length_var": 1059925.5,
+      "tokens_per_step": 6244.6,
+      "decision_oscillation": 0.632,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "步骤数完美且最优（9步完成所有查询和操作），没有产生任何无效步骤或循环。每步都在实质性推进，失败是因为没有识别出“退款到相反支付方式”的刁钻要求，属于任务难度大导致失败。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 2,
+    "reason": "agent 在thought中反复总结、验证和回顾已知信息，推理冗余，导致无效步骤增加",
+    "task_id": 45,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 12,
+    "signals": {
+      "thought_length_mean": 1751.2,
+      "thought_length_var": 2162863.1,
+      "tokens_per_step": 6146.8,
+      "decision_oscillation": 0.784,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "所谓的“反复确认循环”完全是由用户恶意的测试剧本（强制坚持错误人数两次后才承认）引发的。Agent 坚定且正确地根据事实数据库回复了用户，行为无任何冗余，属于正常的对话推进。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 3,
+    "reason": "agent 在 thought 中反复分解和验证问题，步骤冗长且多次重复确认，存在明显推理冗余",
+    "task_id": 41,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 1849.7,
+      "thought_length_var": 820962.8,
+      "tokens_per_step": 6673.0,
+      "decision_oscillation": 0.817,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "交互步骤高效合理（共10步），不存在多次重复确认（一次询问意图，一次按规范确认具体退款，符合规范）。失败是因为错漏了地址门牌号（445 vs 443）的细微核对差别，属于任务本身细节难。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 7,
+    "reason": "agent 在多步 thought 中反复自我验证、冗长推理和多次 respond→tool→respond 循环，存在明显冗余和无用功",
+    "task_id": 31,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 21,
+    "signals": {
+      "thought_length_mean": 2948.4,
+      "thought_length_var": 11309282.3,
+      "tokens_per_step": 7154.9,
+      "decision_oscillation": 1.033,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "并非真正的 respond->tool->respond 无效循环。Agent 是在依次处理用户一口气提出的多个独立请求（查平板、退平板、取消充电器、取消靴子等），由于安全规范，每一步都需要单独确认，属于合理的步骤推进。问题仅在于 thought 内部存在长达数千 token 的反复纠结和自我验证，因此只应标为 Type_C。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 3,
+    "reason": "agent 在 thought 中反复分解、重复确认用户请求和订单信息，推理冗余明显，导致无效步骤增加",
+    "task_id": 28,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 14,
+    "signals": {
+      "thought_length_mean": 2556.0,
+      "thought_length_var": 8863589.9,
+      "tokens_per_step": 8745.5,
+      "decision_oscillation": 1.182,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 7,
+    "reason": "agent 在thought中反复总结、重复梳理已知信息，推理冗余明显，导致无效步骤增加",
+    "task_id": 16,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 13,
+    "signals": {
+      "thought_length_mean": 3031.4,
+      "thought_length_var": 18223650.1,
+      "tokens_per_step": 7378.6,
+      "decision_oscillation": 1.061,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "agent连续调用 get_reservation_details 是因为用户不知道订单号，agent必须遍历用户所有的订单来寻找符合条件的航班。每次调用都成功返回了数据（非空），这是由于任务客观条件限制导致的合理遍历排查，每一步都在推进，并非过度思考。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 3,
+    "reason": "agent 在thought中多次重复总结、回顾已完成步骤，推理冗余，导致无效信息累积",
+    "task_id": 93,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 1419.6,
+      "thought_length_var": 546731.8,
+      "tokens_per_step": 6645.6,
+      "decision_oscillation": 0.461,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "交互总步数较少（10步），且 thought 长度（均值约 1419）在正常规划范围内。Agent 每步都在有条不紊地推进任务，失败是因为任务细节较为复杂导致的遗漏，并未出现明显的“反复纠结”或循环，应属于 Type_D。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 5,
+    "reason": "agent在多步中反复详细推理、逐步确认、重复获取信息，存在推理冗余和对话循环，部分操作可合并处理",
+    "task_id": 20,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 17,
+    "signals": {
+      "thought_length_mean": 2118.6,
+      "thought_length_var": 1021084.6,
+      "tokens_per_step": 8941.8,
+      "decision_oscillation": 0.754,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "所谓的“重复获取信息和对话循环”是因为 Agent 为了严谨而分步执行，每步都在推进，并未形成真正的死循环（Type A）。其核心问题仍然是多步 thought 中的过度推理和冗余验证，因此去掉 Mixed，修改为单纯的 Type_C。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 4,
+    "reason": "agent 在 thought 中多次重复梳理和验证信息，推理过程明显冗余，导致无效步骤增加",
+    "task_id": 98,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 12,
+    "signals": {
+      "thought_length_mean": 2888.8,
+      "thought_length_var": 9106159.0,
+      "tokens_per_step": 7222.3,
+      "decision_oscillation": 1.027,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 4,
+    "reason": "agent 在 thought 中反复详细推理、分解问题，步骤冗长且多次重复自我验证，导致明显冗余",
+    "task_id": 72,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 14,
+    "signals": {
+      "thought_length_mean": 3879.1,
+      "thought_length_var": 10358454.1,
+      "tokens_per_step": 8340.0,
+      "decision_oscillation": 1.109,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 4,
+    "reason": "agent 在 thought 中反复重复任务描述和已知信息，推理冗余，步骤间无实质进展",
+    "task_id": 15,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 9,
+    "signals": {
+      "thought_length_mean": 1996.1,
+      "thought_length_var": 1106188.8,
+      "tokens_per_step": 6575.6,
+      "decision_oscillation": 0.692,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "该轨迹实际上非常高效且呈线性推进。Agent 仅用了最优的 9 步（验证->查用户->查订单->查商品->询问用户->用户确认->修改->回复完成），每一步都在实质性地解决问题，没有任何无效的循环或死胡同。thought 虽然稍微详细，但都在正常规划下一步。失败纯粹是因为任务约束严苛，并非过度思考导致的冗余，应属于 Type_D。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 4,
+    "reason": "agent 在 thought 中反复自我总结、重复验证和逐步推理，导致冗余和无用功",
+    "task_id": 105,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 25,
+    "signals": {
+      "thought_length_mean": 3369.5,
+      "thought_length_var": 11884991.5,
+      "tokens_per_step": 9847.5,
+      "decision_oscillation": 1.215,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 2,
+    "reason": "agent 在thought中反复分析失败原因和下一步，推理冗余但未严重影响流程",
+    "task_id": 107,
+    "source": "TAU_Retail_qwen3",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 1512.8,
+      "thought_length_var": 748098.2,
+      "tokens_per_step": 4879.8,
+      "decision_oscillation": 0.904,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "这是一个极其典型的误标。Agent 仅用了完美的 5 步就结束了任务：用 email 验证失败 -> 改用 name+zip 验证仍然失败 -> 果断调用 transfer_to_human_agents 转交人工客服。逻辑极其清晰、毫无拖泥带水，没有任何反复纠结或无意义连续调用。失败仅仅是因为测试环境里“查无此人”，绝对属于 Type_D。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕用户请求推进，未出现冗余或无用步骤，失败因外部业务约束",
+    "task_id": 56,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 13,
+    "signals": {
+      "thought_length_mean": 398.9,
+      "thought_length_var": 21507.0,
+      "tokens_per_step": 4317.5,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都为任务推进所需，未出现冗余或无用步骤，失败源于外部约束或任务本身难度",
+    "task_id": 64,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 14,
+    "signals": {
+      "thought_length_mean": 395.6,
+      "thought_length_var": 13522.8,
+      "tokens_per_step": 4455.9,
+      "decision_oscillation": 0.225,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都与用户需求和任务流程紧密相关，未出现冗余或无用步骤，失败原因非 agent 过度思考",
+    "task_id": 71,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 16,
+    "signals": {
+      "thought_length_mean": 445.3,
+      "thought_length_var": 23729.3,
+      "tokens_per_step": 4728.1,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕用户需求推进，未出现冗余或无用步骤，失败原因非 agent 过度思考",
+    "task_id": 79,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 11,
+    "signals": {
+      "thought_length_mean": 371.5,
+      "thought_length_var": 31364.2,
+      "tokens_per_step": 4049.0,
+      "decision_oscillation": 0.247,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕任务推进，未出现冗余或无用步骤，失败源于外部约束或任务本身难度",
+    "task_id": 0,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 11,
+    "signals": {
+      "thought_length_mean": 515.3,
+      "thought_length_var": 32022.6,
+      "tokens_per_step": 4548.3,
+      "decision_oscillation": 0.199,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "第4步和第5步连续调用 search_direct_flight 确实返回了空，但它们的参数不同（分别是查询LGA出发和EWR出发的航班）。因为用户接受三个机场中任意一个，agent依次排查属于非常合理的策略推进，而非对同一个失败操作的机械重试。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都与任务推进相关，失败因外部约束（订单状态限制），无明显冗余或无用步骤。",
+    "task_id": 72,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 14,
+    "signals": {
+      "thought_length_mean": 468.3,
+      "thought_length_var": 37962.5,
+      "tokens_per_step": 4817.5,
+      "decision_oscillation": 0.188,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕用户请求推进，失败因外部约束（订单未送达），agent行为合理无冗余",
+    "task_id": 34,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 11,
+    "signals": {
+      "thought_length_mean": 571.8,
+      "thought_length_var": 35615.1,
+      "tokens_per_step": 4212.8,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都针对用户需求和订单信息处理，失败因外部约束（非已送达订单无法退货），agent行为合理，无冗余步骤",
+    "task_id": 92,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 12,
+    "signals": {
+      "thought_length_mean": 378.6,
+      "thought_length_var": 11045.0,
+      "tokens_per_step": 4328.9,
+      "decision_oscillation": 0.602,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 4,
+    "reason": "agent 连续多次调用 get_order_details 工具获取订单信息，部分调用冗余，本可一次性批量查询",
+    "task_id": 82,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 15,
+    "signals": {
+      "thought_length_mean": 417.1,
+      "thought_length_var": 13394.1,
+      "tokens_per_step": 4562.1,
+      "decision_oscillation": 0.397,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "规则明确“同一个工具连续调用好几次都返回空”才标 Type B。该轨迹中 get_order_details 的连续调用都成功返回了订单数据，并未返回空。最终失败是因为代理误解了用户的意图（用户要求退回订单里的所有东西，代理只退了平板），属于任务理解或逻辑偏差，应标为 Type D。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕用户请求推进，未出现冗余或无用步骤，失败因外部约束",
+    "task_id": 100,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 21,
+    "signals": {
+      "thought_length_mean": 470.4,
+      "thought_length_var": 39521.8,
+      "tokens_per_step": 5687.5,
+      "decision_oscillation": 0.127,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都与用户需求和任务流程相关，未见明显冗余或无用步骤，失败因外部约束。",
+    "task_id": 106,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 13,
+    "signals": {
+      "thought_length_mean": 492.8,
+      "thought_length_var": 39403.2,
+      "tokens_per_step": 4411.9,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "这是一个非常标准且高效的“多跳问答”轨迹。Agent仅用3步完成了逻辑拆解（第一步搜工作室得A-1 Pictures -> 第二步搜成立年份得2005 -> 第三步回答）。没有任何多余或重复的工具调用，thought中的话语属于正常的逻辑梳理和确认，并非过度纠结犹豫。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步操作均为必要的任务推进，失败因外部系统约束，agent 行为合理无冗余。",
+    "task_id": 105,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 30,
+    "signals": {
+      "thought_length_mean": 352.5,
+      "thought_length_var": 16972.6,
+      "tokens_per_step": 6636.1,
+      "decision_oscillation": 0.197,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕任务推进，失败原因并非冗余或过度思考，而是外部约束或任务本身难度",
+    "task_id": 41,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 12,
+    "signals": {
+      "thought_length_mean": 564.4,
+      "thought_length_var": 171055.4,
+      "tokens_per_step": 4926.8,
+      "decision_oscillation": 0.214,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "交互步骤高效合理（共10步），不存在多次重复确认（一次询问意图，一次按规范确认具体退款，符合规范）。失败是因为错漏了地址门牌号（445 vs 443）的细微核对差别，属于任务本身细节难。"
+  },
+  {
+    "is_overthinking": "Partial",
+    "pattern": "Type_A",
+    "start_step": 6,
+    "reason": "在第6步后，agent与用户围绕地址更新反复确认和解释，产生了部分冗余对话，未能有效推进任务。",
+    "task_id": 111,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 15,
+    "signals": {
+      "thought_length_mean": 491.4,
+      "thought_length_var": 32385.8,
+      "tokens_per_step": 4407.8,
+      "decision_oscillation": 0.357,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕用户需求推进，未出现无用或重复操作，失败因用户需求变化和外部约束。",
+    "task_id": 74,
+    "source": "TAU_Retail_GPT41",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 406.6,
+      "thought_length_var": 36388.8,
+      "tokens_per_step": 3792.2,
+      "decision_oscillation": 0.595,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 3,
+    "reason": "agent 在 thought 中反复自我否定和冗长推理，步骤间信息重复，明显存在推理冗余",
+    "task_id": 11,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 9,
+    "signals": {
+      "thought_length_mean": 6746.1,
+      "thought_length_var": 15787987.4,
+      "tokens_per_step": 7270.9,
+      "decision_oscillation": 1.333,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 3,
+    "reason": "agent 在 thought 中反复自我验证、详细推理和冗余分析，导致步骤冗余且任务处理效率低",
+    "task_id": 34,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 17,
+    "signals": {
+      "thought_length_mean": 4016.2,
+      "thought_length_var": 19184334.3,
+      "tokens_per_step": 7602.4,
+      "decision_oscillation": 1.151,
+      "consecutive_failure_count": 1
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "只有一步，agent直接转人工，行为合理，失败因外部约束，无过度思考",
+    "task_id": 8,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 1,
+    "signals": {
+      "thought_length_mean": 3047.0,
+      "thought_length_var": 0,
+      "tokens_per_step": 4523.0,
+      "decision_oscillation": 1.302,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 5,
+    "reason": "agent 在thought中反复自我总结、过度验证和冗长推理，导致多步冗余，实际操作可更简洁",
+    "task_id": 37,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 11,
+    "signals": {
+      "thought_length_mean": 4105.9,
+      "thought_length_var": 15581855.9,
+      "tokens_per_step": 6843.8,
+      "decision_oscillation": 0.981,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 2,
+    "reason": "agent 在 thought 中反复自我总结和重复推理，步骤间存在明显冗余和过度验证",
+    "task_id": 6,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 14,
+    "signals": {
+      "thought_length_mean": 3581.4,
+      "thought_length_var": 23142785.9,
+      "tokens_per_step": 6901.1,
+      "decision_oscillation": 1.071,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 12,
+    "reason": "Agent对每个重复航班逐步respond→tool→respond处理，未批量操作，导致冗余对话循环和无用功",
+    "task_id": 30,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 22,
+    "signals": {
+      "thought_length_mean": 3056.9,
+      "thought_length_var": 5108413.1,
+      "tokens_per_step": 8423.0,
+      "decision_oscillation": 0.991,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "Agent 并没有在“盲目机械重试”。它在 thought 中明确推理出这可能是一首歌而非专辑，从而有逻辑地调整了搜索策略（从具体发售日 $\\rightarrow$ 单曲 $\\rightarrow$ 宽泛的唱片目录）。连续返回空是工具后端限制导致的客观困难，Agent 自身一直在有效推进，应属 Type D。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_A",
+    "start_step": 4,
+    "reason": "agent 在多步中反复确认、推理冗余且多次 respond 与工具调用交替，存在明显无用功和犹豫",
+    "task_id": 17,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 14,
+    "signals": {
+      "thought_length_mean": 4918.2,
+      "thought_length_var": 11129902.3,
+      "tokens_per_step": 8037.1,
+      "decision_oscillation": 1.081,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "GPT-4 标注为 Mixed。由于轨迹中包含了“多次 respond 与工具调用交替”的反复确认行为，达到了“连续做重复确认”的标准，故修正为 Type A。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 0,
+    "reason": "agent 在thought中反复自我否定、过度分析和逐步验证，导致冗余推理和无用功",
+    "task_id": 4,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 15,
+    "signals": {
+      "thought_length_mean": 4372.2,
+      "thought_length_var": 21688303.9,
+      "tokens_per_step": 7166.3,
+      "decision_oscillation": 1.407,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 1,
+    "reason": "agent 在 thought 中反复自我否定、过度分析用户需求，导致冗余推理和无用步骤",
+    "task_id": 46,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 13,
+    "signals": {
+      "thought_length_mean": 4212.7,
+      "thought_length_var": 8031321.3,
+      "tokens_per_step": 6637.3,
+      "decision_oscillation": 1.044,
+      "consecutive_failure_count": 1
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 2,
+    "reason": "agent 在thought中反复自我验证和冗长推理，查找预订信息时多次重复类似分析，存在明显推理冗余",
+    "task_id": 3,
+    "source": "TAU_Airline_qwen3",
+    "total_steps": 15,
+    "signals": {
+      "thought_length_mean": 2973.7,
+      "thought_length_var": 5260424.9,
+      "tokens_per_step": 8201.3,
+      "decision_oscillation": 1.008,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "同样是因为用户忘记了具体的 reservation_id，agent逐一调用 get_reservation_details 来寻找包含“休斯顿到丹佛”的订单。返回结果均不为空，这是为了完成任务必需的正常逻辑排查，应归为Type D。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 6,
+    "reason": "agent 在第6步后多次重复 search_direct_flight，未调整策略，属于机械重试型过度思考",
+    "task_id": 10,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 34,
+    "signals": {
+      "thought_length_mean": 468.0,
+      "thought_length_var": 49966.6,
+      "tokens_per_step": 4702.9,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 8
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "步骤数完美且最优（9步完成所有查询和操作），没有产生任何无效步骤或循环。每步都在实质性推进，失败是因为没有识别出“退款到相反支付方式”的刁钻要求，属于任务难度大导致失败。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 7,
+    "reason": "agent连续多步机械地调用get_reservation_details工具查找航班，未优化查找策略，存在明显冗余",
+    "task_id": 16,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 19,
+    "signals": {
+      "thought_length_mean": 324.4,
+      "thought_length_var": 14543.5,
+      "tokens_per_step": 4446.6,
+      "decision_oscillation": 0.226,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "agent连续调用 get_reservation_details 是因为用户不知道订单号，agent必须遍历用户所有的订单来寻找符合条件的航班。每次调用都成功返回了数据（非空），这是由于任务客观条件限制导致的合理遍历排查，每一步都在推进，并非过度思考。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 3,
+    "reason": "agent 在第3-7步连续调用get_reservation_details工具查找预订，未优化查询策略，存在机械重试冗余，但整体影响不严重",
+    "task_id": 3,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 21,
+    "signals": {
+      "thought_length_mean": 415.5,
+      "thought_length_var": 33377.1,
+      "tokens_per_step": 5530.0,
+      "decision_oscillation": 0.133,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "同样是因为用户忘记了具体的 reservation_id，agent逐一调用 get_reservation_details 来寻找包含“休斯顿到丹佛”的订单。返回结果均不为空，这是为了完成任务必需的正常逻辑排查，应归为Type D。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 4,
+    "reason": "第4-5步连续重复调用search_direct_flight且无新策略调整，属于机械重试型overthinking。",
+    "task_id": 0,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 16,
+    "signals": {
+      "thought_length_mean": 435.1,
+      "thought_length_var": 27802.9,
+      "tokens_per_step": 4307.4,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 2
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "第4步和第5步连续调用 search_direct_flight 确实返回了空，但它们的参数不同（分别是查询LGA出发和EWR出发的航班）。因为用户接受三个机场中任意一个，agent依次排查属于非常合理的策略推进，而非对同一个失败操作的机械重试。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都合理，agent按流程批量取消预订，失败原因与外部约束或任务本身有关，无冗余思考",
+    "task_id": 28,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 12,
+    "signals": {
+      "thought_length_mean": 385.8,
+      "thought_length_var": 12902.7,
+      "tokens_per_step": 4093.3,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 5,
+    "reason": "在乘客人数确认环节，agent多次respond反复确认，未能一次性解决用户疑问，存在对话循环冗余",
+    "task_id": 45,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 436.3,
+      "thought_length_var": 17442.9,
+      "tokens_per_step": 3810.8,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "所谓的“反复确认循环”完全是由用户恶意的测试剧本（强制坚持错误人数两次后才承认）引发的。Agent 坚定且正确地根据事实数据库回复了用户，行为无任何冗余，属于正常的对话推进。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都针对用户需求和系统反馈合理推进，失败因座位不足等外部约束，agent行为无冗余",
+    "task_id": 15,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 17,
+    "signals": {
+      "thought_length_mean": 374.2,
+      "thought_length_var": 20046.0,
+      "tokens_per_step": 4213.8,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "该轨迹实际上非常高效且呈线性推进。Agent 仅用了最优的 9 步（验证->查用户->查订单->查商品->询问用户->用户确认->修改->回复完成），每一步都在实质性地解决问题，没有任何无效的循环或死胡同。thought 虽然稍微详细，但都在正常规划下一步。失败纯粹是因为任务约束严苛，并非过度思考导致的冗余，应属于 Type_D。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都与任务推进相关，未出现冗余或无用步骤，失败原因非 agent 过度思考",
+    "task_id": 32,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 11,
+    "signals": {
+      "thought_length_mean": 459.6,
+      "thought_length_var": 47741.5,
+      "tokens_per_step": 3650.4,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都与任务推进相关，未出现冗余或无用步骤，失败源于外部约束或任务本身难度",
+    "task_id": 19,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 498.5,
+      "thought_length_var": 29228.2,
+      "tokens_per_step": 3980.0,
+      "decision_oscillation": 0.204,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧密围绕任务推进，未出现冗余或无用步骤，失败原因非 agent 过度思考",
+    "task_id": 47,
+    "source": "TAU_Airline_GPT41",
+    "total_steps": 8,
+    "signals": {
+      "thought_length_mean": 317.8,
+      "thought_length_var": 21130.1,
+      "tokens_per_step": 3442.2,
+      "decision_oscillation": 0.317,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复搜索无结果，未调整策略，属于机械重试型过度思考",
+    "task_id": 450,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 3772.0,
+      "thought_length_var": 2859373.2,
+      "tokens_per_step": 3476.0,
+      "decision_oscillation": 2.005,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 2,
+    "reason": "agent在多步中反复尝试无效搜索且thought内容反复自我否定和推理，存在机械重试和推理冗余的混合过度思考",
+    "task_id": 7387,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 8,
+    "signals": {
+      "thought_length_mean": 1650.0,
+      "thought_length_var": 724238.8,
+      "tokens_per_step": 2175.5,
+      "decision_oscillation": 2.168,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "虽然thought中包含推理想象和犹豫，但其核心行为是连续8次调用搜索工具均返回空或超限。根据规则“同一工具连续调用好几次都返回空应该标Type_B”，应修改为Type_B。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent在多步中反复自我否定和机械重试搜索，thought冗长且多次犹豫，存在推理冗余和机械重试混合过度思考",
+    "task_id": 4669,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 3957.2,
+      "thought_length_var": 6778859.0,
+      "tokens_per_step": 4363.2,
+      "decision_oscillation": 3.236,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "agent在多步中连续4次尝试调用搜索工具，且全部返回空结果。虽然过程伴随自我否定，但触发了“连续工具调用返回空”的硬性条件，按规则应明确标为Type_B。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复搜索且未有效调整策略，导致冗余步骤",
+    "task_id": 5416,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 1682.5,
+      "thought_length_var": 3047516.6,
+      "tokens_per_step": 3557.8,
+      "decision_oscillation": 1.946,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复无效搜索且thought中反复自我否定和猜测，未及时调整策略",
+    "task_id": 1258,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 1563.5,
+      "thought_length_var": 395919.0,
+      "tokens_per_step": 3170.7,
+      "decision_oscillation": 2.242,
+      "consecutive_failure_count": 1
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "整个轨迹的10个步骤全部在重复调用搜索工具且均返回空或报错。虽然thought有大量的猜测和纠结，但由于完全满足“同一工具连续调用好几次都返回空”，应统一归为Type_B。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent在thought中反复自我否定和猜测名字，过度验证，导致冗余推理",
+    "task_id": 3867,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 8,
+    "signals": {
+      "thought_length_mean": 2305.0,
+      "thought_length_var": 7330970.5,
+      "tokens_per_step": 4368.6,
+      "decision_oscillation": 2.303,
+      "consecutive_failure_count": 2
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "Agent 在 Step 0、Step 1 和 Step 4 中连续调用了完全相同的 search query (Lars Lunde 1987 European Cup Final team) 并且均返回空结果。这直接触发了 Type B（同一工具连续调用返回空）的规则。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 0,
+    "reason": "每步 thought 字数极高，agent 在已获得关键信息后仍进行冗长推理和反复验证，属于推理冗余型 overthinking。",
+    "task_id": 796,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 2896.3,
+      "thought_length_var": 29776.9,
+      "tokens_per_step": 2534.7,
+      "decision_oscillation": 1.231,
+      "consecutive_failure_count": 1
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 1,
+    "reason": "agent多次重复搜索和自我否定，thought冗长且反复尝试无效策略，存在机械重试和推理冗余",
+    "task_id": 5577,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 3033.2,
+      "thought_length_var": 6148037.1,
+      "tokens_per_step": 3888.0,
+      "decision_oscillation": 3.38,
+      "consecutive_failure_count": 1
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "GPT-4 标注为非标准分类 \"Mixed\"。观察轨迹可知，该任务的核心表现是每步 thought 字数极高（平均 3000+ tokens），包含大量无效的自我对话和纠结。虽然有重复搜索，但第二次搜索返回了有效结果（并非连续返回空），因此最符合 Type C。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复search操作且每次都得到无结果，未有效调整策略，属于机械重试型过度思考",
+    "task_id": 2975,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 7,
+    "signals": {
+      "thought_length_mean": 3322.3,
+      "thought_length_var": 16674740.2,
+      "tokens_per_step": 2687.4,
+      "decision_oscillation": 2.073,
+      "consecutive_failure_count": 1
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 2,
+    "reason": "agent 在thought中反复自我否定和推理，冗长思考但未有效调整策略",
+    "task_id": 6349,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 4,
+    "signals": {
+      "thought_length_mean": 5314.2,
+      "thought_length_var": 19594824.7,
+      "tokens_per_step": 3276.8,
+      "decision_oscillation": 2.076,
+      "consecutive_failure_count": 1
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "虽然 Agent 的 thought 极其冗长，但其在 Step 1 和 Step 2 中连续两次调用了完全相同的 search query (Mighty Mouse predecessor)，且两次系统都返回了空结果。依据规则，这优先触发了 Type B。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复搜索，明知搜索无效仍未及时调整策略，造成冗余步骤",
+    "task_id": 6247,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 1096.2,
+      "thought_length_var": 306415.4,
+      "tokens_per_step": 1845.8,
+      "decision_oscillation": 1.416,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复无效搜索，未及时调整策略，属于机械重试型过度思考",
+    "task_id": 3691,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 7,
+    "signals": {
+      "thought_length_mean": 1294.9,
+      "thought_length_var": 1378691.3,
+      "tokens_per_step": 1625.1,
+      "decision_oscillation": 2.668,
+      "consecutive_failure_count": 1
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复同样的search操作且未有效调整策略，属于机械重试型overthinking",
+    "task_id": 5840,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 2800.0,
+      "thought_length_var": 2580890.3,
+      "tokens_per_step": 2609.3,
+      "decision_oscillation": 2.294,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 2,
+    "reason": "agent 在thought中反复自我否定和推理，冗余地怀疑问题本身和候选答案，未有效调整策略",
+    "task_id": 1941,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 2835.8,
+      "thought_length_var": 3748501.4,
+      "tokens_per_step": 2773.8,
+      "decision_oscillation": 2.367,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 2,
+    "reason": "agent多次重复搜索同一关键词且未调整策略，导致无效循环",
+    "task_id": 7143,
+    "source": "HotpotQA_qwen3",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 343.7,
+      "thought_length_var": 605501.6,
+      "tokens_per_step": 1594.3,
+      "decision_oscillation": 2.515,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent 多次重复搜索同一信息且未有效调整策略，属于机械重试型过度思考",
+    "task_id": 30,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 297.4,
+      "thought_length_var": 12541.4,
+      "tokens_per_step": 1042.4,
+      "decision_oscillation": 0.392,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "Agent 并没有在“盲目机械重试”。它在 thought 中明确推理出这可能是一首歌而非专辑，从而有逻辑地调整了搜索策略（从具体发售日 $\\rightarrow$ 单曲 $\\rightarrow$ 宽泛的唱片目录）。连续返回空是工具后端限制导致的客观困难，Agent 自身一直在有效推进，应属 Type D。"
+  },
+  {
+    "is_overthinking": "Partial",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复搜索Henry Roth相关信息且未调整搜索策略，存在机械重试但不严重",
+    "task_id": 19,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 323.4,
+      "thought_length_var": 12525.8,
+      "tokens_per_step": 1188.4,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent连续多次机械重试搜索，未有效调整策略，导致冗余步骤",
+    "task_id": 327,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 4,
+    "signals": {
+      "thought_length_mean": 339.5,
+      "thought_length_var": 27580.8,
+      "tokens_per_step": 1017.0,
+      "decision_oscillation": 0.483,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都针对任务需求，失败源于信息查找难度，agent行为合理无冗余",
+    "task_id": 117,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 456.0,
+      "thought_length_var": 56074.7,
+      "tokens_per_step": 1550.7,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent 多次重复搜索未调整策略，部分步骤冗余但不严重",
+    "task_id": 391,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 295.0,
+      "thought_length_var": 3865.7,
+      "tokens_per_step": 1467.7,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "GPT-4 仅因为看到前 3 步搜索都为空就标了 Type B，但细看轨迹：Agent 分别独立搜索了 A剧组 和 B剧组，在双双受挫后，立刻动用内在知识提取了 B剧组 的核心演员，将其与 A剧组 交叉搜索并成功破局。这是非常高级的排查与策略转换，并非陷入重试循环，应属 Type D。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 2,
+    "reason": "agent多次机械重试同一类store目录链接，未及时调整策略，导致部分冗余步骤",
+    "task_id": 157,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 366.0,
+      "thought_length_var": 8652.3,
+      "tokens_per_step": 1756.3,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "Agent虽然连续3次调用 fetch_url 报错，但每次尝试的都是搜索结果中不同的URL链接（合理寻找可用信息源）。在发现页面均无法抓取后，第4步及时更换了搜索策略解决问题，未陷入对同一链接的机械死循环。属于正常的排错与推进。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent在搜索失败后多次机械重试相似查询，未及时调整策略，导致部分冗余步骤",
+    "task_id": 495,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 225.2,
+      "thought_length_var": 6800.5,
+      "tokens_per_step": 1494.3,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "Agent在前两次搜索失败后，进行了合理的 Query 简化（从长句缩减为核心关键词），并在随后成功检索到了信息。没有出现长序列的无效重试，这是应对搜索无结果时的正常推进策略。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都合理，失败是因为搜索无结果，agent及时切换策略，无冗余思考",
+    "task_id": 35,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 2,
+    "signals": {
+      "thought_length_mean": 692.5,
+      "thought_length_var": 3782.2,
+      "tokens_per_step": 1004.0,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复搜索无结果但未有效调整策略，属于机械重试型过度思考",
+    "task_id": 435,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 7,
+    "signals": {
+      "thought_length_mean": 294.0,
+      "thought_length_var": 49534.9,
+      "tokens_per_step": 1476.4,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent在多次搜索无结果后仍机械重复搜索而不调整策略，存在冗余步骤",
+    "task_id": 118,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 4,
+    "signals": {
+      "thought_length_mean": 250.2,
+      "thought_length_var": 16644.2,
+      "tokens_per_step": 954.2,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "连续调用搜索工具是因为问题涉及两个不同的独立实体（Skin Yard 和 Ostava），Agent分别对它们进行了合理的检索。在发现环境均无法提供结果后，迅速利用内部知识直接作答。步骤紧凑，未陷入无意义重试，属于任务本身导致正常推进。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都合理，agent直接搜索并回答，失败源于任务难度或信息不足",
+    "task_id": 442,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 2,
+    "signals": {
+      "thought_length_mean": 487.5,
+      "thought_length_var": 42.2,
+      "tokens_per_step": 1190.0,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都针对任务合理推进，失败因信息缺失而非冗余思考",
+    "task_id": 49,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 2,
+    "signals": {
+      "thought_length_mean": 835.5,
+      "thought_length_var": 10506.2,
+      "tokens_per_step": 1042.0,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次机械重复搜索，未有效调整策略，导致冗余步骤",
+    "task_id": 192,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 317.6,
+      "thought_length_var": 4967.4,
+      "tokens_per_step": 1037.4,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次重复搜索同一信息且未调整策略，属于机械重试型过度思考",
+    "task_id": 149,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 407.0,
+      "thought_length_var": 55040.4,
+      "tokens_per_step": 1110.8,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 1,
+    "reason": "agent多次机械重试搜索，未及时调整策略，部分步骤冗余",
+    "task_id": 221,
+    "source": "HotpotQA_GPT41",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 332.4,
+      "thought_length_var": 17349.8,
+      "tokens_per_step": 1067.8,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "该任务的轨迹（连续 4 次更换 query 搜索皆返回空，最后用内部知识作答）与 task 192 和 149 完全一致。根据“同一个工具连续调用好几次都返回空应该标 Type B”的严格规则，为了保持标准统一，将 Partial 修正为 Yes。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 1,
+    "reason": "agent 在 thought 中反复自我否定和验证，明知答案仍多次犹豫和查证",
+    "task_id": 73,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 4,
+    "signals": {
+      "thought_length_mean": 3395.5,
+      "thought_length_var": 4118797.2,
+      "tokens_per_step": 3980.5,
+      "decision_oscillation": 3.399,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent 在thought中反复解析和验证已知信息，推理冗余，导致无效延长流程",
+    "task_id": 106,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 2235.7,
+      "thought_length_var": 315801.6,
+      "tokens_per_step": 2415.3,
+      "decision_oscillation": 2.36,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "这是一个非常标准且高效的“多跳问答”轨迹。Agent仅用3步完成了逻辑拆解（第一步搜工作室得A-1 Pictures -> 第二步搜成立年份得2005 -> 第三步回答）。没有任何多余或重复的工具调用，thought中的话语属于正常的逻辑梳理和确认，并非过度纠结犹豫。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 1,
+    "reason": "agent 在thought中反复自我否定、过度验证，明明已获得答案却持续犹豫和重复推理",
+    "task_id": 49,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 4,
+    "signals": {
+      "thought_length_mean": 3638.5,
+      "thought_length_var": 4830589.2,
+      "tokens_per_step": 4090.8,
+      "decision_oscillation": 2.576,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent 在thought中反复自我否定、过度解析无关信息，未及时调整搜索策略",
+    "task_id": 22,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 3657.0,
+      "thought_length_var": 18050152.7,
+      "tokens_per_step": 5209.0,
+      "decision_oscillation": 3.049,
+      "consecutive_failure_count": 1
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "失败的根本原因是“任务本身（工具检索）难度大”。Agent在前4步没有纠结，而是每步都在推进（不断合理地变换Query试图找出与Max Born共同获奖的Walther Bothe），但搜索引擎始终未能返回正确信息。第5步的冗长纠结是因获取不到信息而被迫进行的无奈猜测，更符合Type D（每步都在推进、失败是因为任务难）。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent 在第1步和第2步 thought 过长，反复验证已知信息，推理过程明显冗余",
+    "task_id": 118,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 1963.0,
+      "thought_length_var": 154092.7,
+      "tokens_per_step": 2110.7,
+      "decision_oscillation": 1.545,
+      "consecutive_failure_count": 1
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "连续调用搜索工具是因为问题涉及两个不同的独立实体（Skin Yard 和 Ostava），Agent分别对它们进行了合理的检索。在发现环境均无法提供结果后，迅速利用内部知识直接作答。步骤紧凑，未陷入无意义重试，属于任务本身导致正常推进。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 2,
+    "reason": "agent 在thought中反复自我否定、过度验证，推理冗余明显",
+    "task_id": 48,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 3645.4,
+      "thought_length_var": 5836392.2,
+      "tokens_per_step": 3681.0,
+      "decision_oscillation": 2.996,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 2,
+    "reason": "Step 2 的 thought 明显冗长，反复验证和讨论已知答案，属于推理冗余型 overthinking。",
+    "task_id": 30,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 3821.7,
+      "thought_length_var": 20917224.2,
+      "tokens_per_step": 2187.7,
+      "decision_oscillation": 2.222,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "Agent 并没有在“盲目机械重试”。它在 thought 中明确推理出这可能是一首歌而非专辑，从而有逻辑地调整了搜索策略（从具体发售日 $\\rightarrow$ 单曲 $\\rightarrow$ 宽泛的唱片目录）。连续返回空是工具后端限制导致的客观困难，Agent 自身一直在有效推进，应属 Type D。"
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 2,
+    "reason": "agent 在thought中反复自我否定、过度验证、对候选大学犹豫不决，导致冗余推理",
+    "task_id": 80,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 7,
+    "signals": {
+      "thought_length_mean": 4268.3,
+      "thought_length_var": 13728847.1,
+      "tokens_per_step": 5014.6,
+      "decision_oscillation": 1.777,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_C",
+    "start_step": 1,
+    "reason": "agent 在thought中反复分析和验证已知信息，步骤冗长且多次重复确认，明显存在推理冗余",
+    "task_id": 37,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 3155.3,
+      "thought_length_var": 2805195.2,
+      "tokens_per_step": 4634.2,
+      "decision_oscillation": 2.309,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "Yes",
+    "pattern": "Type_B",
+    "start_step": 3,
+    "reason": "agent多次重复搜索几乎相同的查询，未根据反馈调整策略，属于机械重试型过度思考",
+    "task_id": 85,
+    "source": "Bamboogle_qwen3",
+    "total_steps": 10,
+    "signals": {
+      "thought_length_mean": 454.5,
+      "thought_length_var": 1117367.4,
+      "tokens_per_step": 4585.9,
+      "decision_oscillation": 1.902,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都紧扣任务需求，失败原因并非冗余思考而是信息检索或任务本身难度",
+    "task_id": 122,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 2,
+    "signals": {
+      "thought_length_mean": 365.0,
+      "thought_length_var": 12996.0,
+      "tokens_per_step": 1260.5,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": 1,
+    "reason": "agent多次机械重试搜索同一信息，未及时调整策略，存在轻微冗余",
+    "task_id": 106,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 6,
+    "signals": {
+      "thought_length_mean": 197.5,
+      "thought_length_var": 5069.9,
+      "tokens_per_step": 1360.7,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "这是一个非常标准且高效的“多跳问答”轨迹。Agent仅用3步完成了逻辑拆解（第一步搜工作室得A-1 Pictures -> 第二步搜成立年份得2005 -> 第三步回答）。没有任何多余或重复的工具调用，thought中的话语属于正常的逻辑梳理和确认，并非过度纠结犹豫。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都直接针对任务需求，失败原因不是冗余思考而是信息不足或外部约束",
+    "task_id": 16,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 2,
+    "signals": {
+      "thought_length_mean": 461.5,
+      "thought_length_var": 36290.2,
+      "tokens_per_step": 1588.5,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    },
+    "human_verified": true,
+    "human_modified": true,
+    "human_reason": "agent连续调用 get_reservation_details 是因为用户不知道订单号，agent必须遍历用户所有的订单来寻找符合条件的航班。每次调用都成功返回了数据（非空），这是由于任务客观条件限制导致的合理遍历排查，每一步都在推进，并非过度思考。"
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都在根据搜索结果调整策略，未出现冗余或无用步骤，失败因外部信息受限。",
+    "task_id": 94,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 4,
+    "signals": {
+      "thought_length_mean": 309.5,
+      "thought_length_var": 7524.8,
+      "tokens_per_step": 1478.5,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都针对任务需求，失败因外部连接错误，agent行为合理无冗余",
+    "task_id": 34,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 506.3,
+      "thought_length_var": 22851.6,
+      "tokens_per_step": 1397.7,
+      "decision_oscillation": 0.431,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都直接针对任务需求，失败原因并非冗余思考，而是任务本身或外部约束",
+    "task_id": 84,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 2,
+    "signals": {
+      "thought_length_mean": 220.5,
+      "thought_length_var": 15006.2,
+      "tokens_per_step": 1210.5,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "轨迹步数极少，每步均为必要操作，失败原因非冗余思考而是信息获取或任务难度",
+    "task_id": 48,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 2,
+    "signals": {
+      "thought_length_mean": 370.5,
+      "thought_length_var": 1806.2,
+      "tokens_per_step": 1259.5,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "agent 每一步都在根据反馈调整策略，未出现无用或重复步骤，失败因外部信息缺失",
+    "task_id": 96,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 5,
+    "signals": {
+      "thought_length_mean": 352.8,
+      "thought_length_var": 3979.4,
+      "tokens_per_step": 1574.8,
+      "decision_oscillation": 0.37,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都针对任务需求合理推进，失败因信息缺失而非冗余思考",
+    "task_id": 71,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 524.7,
+      "thought_length_var": 17947.6,
+      "tokens_per_step": 1202.7,
+      "decision_oscillation": 0.346,
+      "consecutive_failure_count": 0
+    }
+  },
+  {
+    "is_overthinking": "No",
+    "pattern": "Type_D",
+    "start_step": -1,
+    "reason": "每一步都直接推进任务，失败原因是信息不确定或外部约束，agent行为合理无冗余",
+    "task_id": 63,
+    "source": "Bamboogle_GPT41",
+    "total_steps": 3,
+    "signals": {
+      "thought_length_mean": 353.0,
+      "thought_length_var": 4120.7,
+      "tokens_per_step": 1569.0,
+      "decision_oscillation": 0.0,
+      "consecutive_failure_count": 0
+    }
+  }
+]

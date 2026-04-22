@@ -2,7 +2,7 @@ import json, numpy as np
 from collections import Counter
 
 # 读取标注结果（师弟核对完之后换成修正版文件名）
-annotations = json.load(open("annotations_gpt4.json"))
+annotations = json.load(open("annotations_human_corrected.json"))
 
 # ===== 1. 基本分布统计 =====
 total = len(annotations)
