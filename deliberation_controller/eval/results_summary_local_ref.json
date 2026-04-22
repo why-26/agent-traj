@@ -1,0 +1,119 @@
+{
+  "controller_path": "/data/wanghy/agent_traj/deliberation_controller/checkpoints/best_controller.pt",
+  "reference_mode": "per_dataset_local_reference_distribution",
+  "gate_threshold": 0.5,
+  "num_experiments": 7,
+  "results": [
+    {
+      "dataset_name": "hotpotqa_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_hotpotqa_gpt4_1_local_ref.json",
+      "num_test_trajectories": 500,
+      "no_control_success_rate": 0.49,
+      "controller_success_rate": 0.49,
+      "no_control_avg_token": 5872.652,
+      "controller_avg_token": 5856.3872,
+      "token_saving_rate": 0.0027695834863022384,
+      "intervention_distribution": {
+        "continue": 2237,
+        "mode_switch": 43,
+        "compress": 2
+      }
+    },
+    {
+      "dataset_name": "tau_retail_qwen3_4b",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_retail_qwen3_4b_local_ref.json",
+      "num_test_trajectories": 115,
+      "no_control_success_rate": 0.5826086956521739,
+      "controller_success_rate": 0.5391304347826087,
+      "no_control_avg_token": 93441.07826086956,
+      "controller_avg_token": 57364.404347826094,
+      "token_saving_rate": 0.3860900856936209,
+      "intervention_distribution": {
+        "continue": 1143,
+        "compress": 166,
+        "stop": 9,
+        "redirect": 4,
+        "mode_switch": 140
+      }
+    },
+    {
+      "dataset_name": "tau_retail_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_retail_gpt4_1_local_ref.json",
+      "num_test_trajectories": 115,
+      "no_control_success_rate": 0.7130434782608696,
+      "controller_success_rate": 0.6521739130434783,
+      "no_control_avg_token": 68236.93043478261,
+      "controller_avg_token": 26324.42608695653,
+      "token_saving_rate": 0.6142202481965967,
+      "intervention_distribution": {
+        "continue": 1266,
+        "stop": 18,
+        "compress": 312,
+        "mode_switch": 17,
+        "redirect": 1
+      }
+    },
+    {
+      "dataset_name": "tau_airline_qwen3_4b",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_airline_qwen3_4b_local_ref.json",
+      "num_test_trajectories": 50,
+      "no_control_success_rate": 0.44,
+      "controller_success_rate": 0.44,
+      "no_control_avg_token": 73230.3,
+      "controller_avg_token": 51104.766,
+      "token_saving_rate": 0.30213632881471186,
+      "intervention_distribution": {
+        "continue": 427,
+        "mode_switch": 28,
+        "compress": 39,
+        "stop": 2
+      }
+    },
+    {
+      "dataset_name": "tau_airline_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_airline_gpt4_1_local_ref.json",
+      "num_test_trajectories": 50,
+      "no_control_success_rate": 0.52,
+      "controller_success_rate": 0.52,
+      "no_control_avg_token": 57130.3,
+      "controller_avg_token": 37893.234,
+      "token_saving_rate": 0.33672264980229405,
+      "intervention_distribution": {
+        "continue": 507,
+        "mode_switch": 101,
+        "compress": 43
+      }
+    },
+    {
+      "dataset_name": "bamboogle_qwen3_4b",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_bamboogle_qwen3_4b_local_ref.json",
+      "num_test_trajectories": 125,
+      "no_control_success_rate": 0.52,
+      "controller_success_rate": 0.512,
+      "no_control_avg_token": 21043.696,
+      "controller_avg_token": 16449.017600000003,
+      "token_saving_rate": 0.21833989618553692,
+      "intervention_distribution": {
+        "continue": 629,
+        "compress": 56,
+        "mode_switch": 11,
+        "stop": 1
+      }
+    },
+    {
+      "dataset_name": "bamboogle_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_bamboogle_gpt4_1_local_ref.json",
+      "num_test_trajectories": 125,
+      "no_control_success_rate": 0.648,
+      "controller_success_rate": 0.648,
+      "no_control_avg_token": 4796.944,
+      "controller_avg_token": 4699.1464000000005,
+      "token_saving_rate": 0.020387480028951688,
+      "intervention_distribution": {
+        "continue": 394,
+        "mode_switch": 8,
+        "compress": 2
+      }
+    }
+  ]
+}

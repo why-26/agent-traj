@@ -1,0 +1,125 @@
+{
+  "controller_path": "/data/wanghy/agent_traj/deliberation_controller/checkpoints/best_controller.pt",
+  "reference_dist_path": "/data/wanghy/agent_traj/deliberation_controller/data/reference_distribution_hotpotqa_qwen3_full.json",
+  "gate_threshold": 0.5,
+  "num_experiments": 8,
+  "results": [
+    {
+      "dataset_name": "hotpotqa_qwen3_4b_layer1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_real_intervention_hotpotqa.json",
+      "num_test_trajectories": 741,
+      "no_control_success_rate": 0.1767881241565452,
+      "controller_success_rate": 0.18083670715249664,
+      "no_control_avg_token": 21579.493927125506,
+      "controller_avg_token": 17276.76626180837,
+      "token_saving_rate": 0.19938964647862248,
+      "intervention_distribution": {
+        "continue": 4933,
+        "compress": 373,
+        "stop": 26,
+        "mode_switch": 73,
+        "redirect": 8
+      }
+    },
+    {
+      "dataset_name": "hotpotqa_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_hotpotqa_gpt4_1.json",
+      "num_test_trajectories": 500,
+      "no_control_success_rate": 0.49,
+      "controller_success_rate": 0.49,
+      "no_control_avg_token": 5872.652,
+      "controller_avg_token": 5872.652,
+      "token_saving_rate": 0.0,
+      "intervention_distribution": {
+        "continue": 2282
+      }
+    },
+    {
+      "dataset_name": "tau_retail_qwen3_4b",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_retail_qwen3_4b.json",
+      "num_test_trajectories": 115,
+      "no_control_success_rate": 0.5826086956521739,
+      "controller_success_rate": 0.5739130434782609,
+      "no_control_avg_token": 93441.07826086956,
+      "controller_avg_token": 9286.504347826087,
+      "token_saving_rate": 0.900616468466899,
+      "intervention_distribution": {
+        "continue": 586,
+        "compress": 888,
+        "stop": 1
+      }
+    },
+    {
+      "dataset_name": "tau_retail_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_retail_gpt4_1.json",
+      "num_test_trajectories": 115,
+      "no_control_success_rate": 0.7130434782608696,
+      "controller_success_rate": 0.7130434782608696,
+      "no_control_avg_token": 68236.93043478261,
+      "controller_avg_token": 13714.647826086957,
+      "token_saving_rate": 0.79901429125399,
+      "intervention_distribution": {
+        "continue": 781,
+        "compress": 878
+      }
+    },
+    {
+      "dataset_name": "tau_airline_qwen3_4b",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_airline_qwen3_4b.json",
+      "num_test_trajectories": 50,
+      "no_control_success_rate": 0.44,
+      "controller_success_rate": 0.42,
+      "no_control_avg_token": 73230.3,
+      "controller_avg_token": 7703.653999999999,
+      "token_saving_rate": 0.8948023700572031,
+      "intervention_distribution": {
+        "continue": 188,
+        "compress": 263,
+        "stop": 10
+      }
+    },
+    {
+      "dataset_name": "tau_airline_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_tau_airline_gpt4_1.json",
+      "num_test_trajectories": 50,
+      "no_control_success_rate": 0.52,
+      "controller_success_rate": 0.52,
+      "no_control_avg_token": 57130.3,
+      "controller_avg_token": 24496.451999999994,
+      "token_saving_rate": 0.5712178651258616,
+      "intervention_distribution": {
+        "continue": 459,
+        "compress": 192
+      }
+    },
+    {
+      "dataset_name": "bamboogle_qwen3_4b",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_bamboogle_qwen3_4b.json",
+      "num_test_trajectories": 125,
+      "no_control_success_rate": 0.52,
+      "controller_success_rate": 0.512,
+      "no_control_avg_token": 21043.696,
+      "controller_avg_token": 15316.843200000001,
+      "token_saving_rate": 0.2721410155326326,
+      "intervention_distribution": {
+        "continue": 621,
+        "compress": 72,
+        "stop": 1,
+        "mode_switch": 3
+      }
+    },
+    {
+      "dataset_name": "bamboogle_gpt4_1",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_bamboogle_gpt4_1.json",
+      "num_test_trajectories": 125,
+      "no_control_success_rate": 0.648,
+      "controller_success_rate": 0.648,
+      "no_control_avg_token": 4796.944,
+      "controller_avg_token": 4796.944,
+      "token_saving_rate": 0.0,
+      "intervention_distribution": {
+        "continue": 404
+      }
+    }
+  ]
+}
