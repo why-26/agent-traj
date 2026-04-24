@@ -8,12 +8,15 @@ import os
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Tuple
+from typing import Dict, List, Mapping, Tuple
 
 import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
 from deliberation_controller.model.controller import DeliberationController
+from deliberation_controller.model.controller_mlp import DeliberationMLPController
+from deliberation_controller.model.controller_single_head import DeliberationSingleHeadController
 
 ACTION_NAMES = {0: "Compress", 1: "Redirect", 2: "ModeSwitch", 3: "Stop"}
 CONTINUE_CLASS_ID = 4
@@ -72,11 +75,26 @@ def build_pred_overall_class(
     return out
 
 
+def single_head_to_legacy_overall_class(pred_single_class: torch.Tensor) -> torch.Tensor:
+    """
+    Convert single-head class ids to legacy overall class ids used by metrics.
+
+    single-head classes: 0=Continue,1=Compress,2=Redirect,3=ModeSwitch,4=Stop
+    legacy overall ids: 4=Continue,0=Compress,1=Redirect,2=ModeSwitch,3=Stop
+    """
+    out = pred_single_class.clone()
+    continue_mask = pred_single_class == 0
+    out[continue_mask] = CONTINUE_CLASS_ID
+    out[~continue_mask] = pred_single_class[~continue_mask] - 1
+    return out
+
+
 def evaluate(
-    model: DeliberationController,
+    model: nn.Module,
     dataloader: DataLoader,
     device: torch.device,
     gate_threshold: float,
+    model_type: str = "attention",
 ) -> EvalResult:
     model.eval()
     total_loss = 0.0
@@ -98,20 +116,28 @@ def evaluate(
             gate_label = batch["gate_label"].to(device)
             action_label = batch["action_label"].to(device)
 
-            gate_prob, action_logits = model(signals)
-            loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
+            if model_type == "single_head":
+                class_logits = model(signals)
+                loss = model.compute_loss(class_logits, gate_label, action_label)
+                pred_single = torch.argmax(class_logits, dim=-1)
+                pred_overall = single_head_to_legacy_overall_class(pred_single)
+                pred_gate = (pred_overall != CONTINUE_CLASS_ID).float()
+            else:
+                gate_prob, action_logits = model(signals)
+                loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
+                pred_gate = (gate_prob >= gate_threshold).float()
+                pred_overall = build_pred_overall_class(gate_prob, action_logits, gate_threshold)
 
             batch_size = signals.size(0)
             total_loss += loss.item() * batch_size
             total_samples += batch_size
 
-            pred_gate = (gate_prob >= gate_threshold).float()
             gate_correct += int((pred_gate == gate_label).sum().item())
             gate_total += batch_size
 
             gate_mask = gate_label == 1
             if gate_mask.any():
-                pred_action = torch.argmax(action_logits[gate_mask], dim=-1)
+                pred_action = pred_overall[gate_mask]
                 true_action = action_label[gate_mask]
                 action_correct += int((pred_action == true_action).sum().item())
                 action_total += int(gate_mask.sum().item())
@@ -124,7 +150,6 @@ def evaluate(
                     tp[cls_id] += int((pred_cls & true_cls).sum().item())
 
             true_overall = build_true_overall_class(gate_label.long(), action_label)
-            pred_overall = build_pred_overall_class(gate_prob, action_logits, gate_threshold)
             overall_correct += int((true_overall == pred_overall).sum().item())
             overall_total += batch_size
 
@@ -168,10 +193,11 @@ def print_dataset_stats(dataset_splits: Mapping[str, List[Mapping[str, object]]]
 
 
 def train_one_epoch(
-    model: DeliberationController,
+    model: nn.Module,
     dataloader: DataLoader,
     optimizer: torch.optim.Optimizer,
     device: torch.device,
+    model_type: str = "attention",
 ) -> float:
     model.train()
     running_loss = 0.0
@@ -182,8 +208,12 @@ def train_one_epoch(
         gate_label = batch["gate_label"].to(device)
         action_label = batch["action_label"].to(device)
 
-        gate_prob, action_logits = model(signals)
-        loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
+        if model_type == "single_head":
+            class_logits = model(signals)
+            loss = model.compute_loss(class_logits, gate_label, action_label)
+        else:
+            gate_prob, action_logits = model(signals)
+            loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
 
         optimizer.zero_grad()
         loss.backward()
@@ -199,7 +229,14 @@ def train_one_epoch(
 def create_dataloaders(
     data_path: str,
     batch_size: int,
-) -> Tuple[DataLoader, DataLoader, DataLoader, Dict[str, List[Mapping[str, object]]]]:
+) -> Tuple[
+    DataLoader,
+    DataLoader,
+    DataLoader,
+    Dict[str, List[Mapping[str, object]]],
+    int,
+    int,
+]:
     with open(data_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -210,11 +247,43 @@ def create_dataloaders(
     train_loader = DataLoader(TrajectoryWindowDataset(train_samples), batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(TrajectoryWindowDataset(val_samples), batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(TrajectoryWindowDataset(test_samples), batch_size=batch_size, shuffle=False)
-    return train_loader, val_loader, test_loader, {
-        "train": train_samples,
-        "val": val_samples,
-        "test": test_samples,
-    }
+    signal_dim = 0
+    num_steps = 0
+    meta = data.get("meta", {})
+    if isinstance(meta, dict) and isinstance(meta.get("signal_order"), list):
+        signal_dim = len(meta["signal_order"])
+    if isinstance(meta, dict) and isinstance(meta.get("window_size"), int):
+        num_steps = int(meta["window_size"])
+
+    probe = None
+    for split in (train_samples, val_samples, test_samples):
+        if split:
+            probe = split[0]
+            break
+    if probe is not None:
+        probe_signals = probe.get("signals", [])
+        if isinstance(probe_signals, list) and probe_signals:
+            if num_steps == 0:
+                num_steps = len(probe_signals)
+            first_step = probe_signals[0]
+            if isinstance(first_step, list) and signal_dim == 0:
+                signal_dim = len(first_step)
+
+    if signal_dim <= 0 or num_steps <= 0:
+        raise ValueError("Failed to infer signal_dim/num_steps from dataset.")
+
+    return (
+        train_loader,
+        val_loader,
+        test_loader,
+        {
+            "train": train_samples,
+            "val": val_samples,
+            "test": test_samples,
+        },
+        signal_dim,
+        num_steps,
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -226,7 +295,39 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--patience", type=int, default=10)
     parser.add_argument("--save_dir", type=str, default="checkpoints/")
     parser.add_argument("--gate_threshold", type=float, default=0.5)
+    parser.add_argument(
+        "--model_type",
+        type=str,
+        default="attention",
+        choices=("attention", "mlp", "single_head"),
+        help="Controller backbone type.",
+    )
     return parser.parse_args()
+
+
+def build_model(model_type: str, signal_dim: int, num_steps: int) -> nn.Module:
+    if model_type == "attention":
+        return DeliberationController(
+            signal_dim=signal_dim,
+            hidden_dim=64,
+            num_steps=num_steps,
+            num_actions=4,
+        )
+    if model_type == "mlp":
+        return DeliberationMLPController(
+            signal_dim=signal_dim,
+            hidden_dim=64,
+            num_steps=num_steps,
+            num_actions=4,
+        )
+    if model_type == "single_head":
+        return DeliberationSingleHeadController(
+            signal_dim=signal_dim,
+            hidden_dim=64,
+            num_steps=num_steps,
+            num_classes=5,
+        )
+    raise ValueError(f"Unsupported model_type: {model_type}")
 
 
 def format_action_metrics(result: EvalResult) -> str:
@@ -242,20 +343,23 @@ def format_action_metrics(result: EvalResult) -> str:
 def main() -> None:
     args = parse_args()
     os.makedirs(args.save_dir, exist_ok=True)
-    best_model_path = str(Path(args.save_dir) / "best_controller.pt")
+    best_model_path = str(Path(args.save_dir) / f"best_controller_{args.model_type}.pt")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    train_loader, val_loader, test_loader, splits = create_dataloaders(args.data_path, args.batch_size)
+    train_loader, val_loader, test_loader, splits, signal_dim, num_steps = create_dataloaders(
+        args.data_path,
+        args.batch_size,
+    )
     print_dataset_stats(splits)
 
-    model = DeliberationController(
-        signal_dim=5,
-        hidden_dim=64,
-        num_steps=5,
-        num_actions=4,
-    ).to(device)
+    model = build_model(args.model_type, signal_dim=signal_dim, num_steps=num_steps).to(device)
+    n_params = sum(p.numel() for p in model.parameters())
+    print(
+        f"Model: {args.model_type} | signal_dim={signal_dim} | "
+        f"num_steps={num_steps} | trainable parameters: {n_params}"
+    )
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
     best_val_overall = -1.0
@@ -263,8 +367,20 @@ def main() -> None:
     no_improve_epochs = 0
 
     for epoch in range(1, args.epochs + 1):
-        train_loss = train_one_epoch(model, train_loader, optimizer, device)
-        val_result = evaluate(model, val_loader, device, args.gate_threshold)
+        train_loss = train_one_epoch(
+            model,
+            train_loader,
+            optimizer,
+            device,
+            model_type=args.model_type,
+        )
+        val_result = evaluate(
+            model,
+            val_loader,
+            device,
+            args.gate_threshold,
+            model_type=args.model_type,
+        )
 
         print(
             f"Epoch {epoch:03d} | "
@@ -303,7 +419,13 @@ def main() -> None:
     checkpoint = torch.load(best_model_path, map_location=device)
     model.load_state_dict(checkpoint["model_state_dict"])
 
-    test_result = evaluate(model, test_loader, device, args.gate_threshold)
+    test_result = evaluate(
+        model,
+        test_loader,
+        device,
+        args.gate_threshold,
+        model_type=args.model_type,
+    )
     print("\nTest Results:")
     print(f"  loss:            {test_result.loss:.4f}")
     print(f"  gate_accuracy:   {test_result.gate_accuracy:.4f}")
@@ -315,4 +437,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

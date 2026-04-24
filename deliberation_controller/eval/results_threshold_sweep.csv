@@ -1,0 +1,9 @@
+dataset,threshold,num_test_trajectories,controller_success_rate,token_saving_rate,no_control_success_rate,output_path
+HotpotQA,0.3,741,0.18083670715249664,0.2361088540284007,0.1767881241565452,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_hotpotqa_t0.3.json
+HotpotQA,0.5,741,0.18083670715249664,0.19938964647862248,0.1767881241565452,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_hotpotqa_t0.5.json
+HotpotQA,0.7,741,0.18083670715249664,0.165065325112153,0.1767881241565452,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_hotpotqa_t0.7.json
+HotpotQA,0.9,741,0.1794871794871795,0.09652164532418041,0.1767881241565452,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_hotpotqa_t0.9.json
+TAU-bench Retail,0.3,115,0.5739130434782609,0.9329755910350944,0.5826086956521739,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_tau_bench_retail_t0.3.json
+TAU-bench Retail,0.5,115,0.5739130434782609,0.900616468466899,0.5826086956521739,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_tau_bench_retail_t0.5.json
+TAU-bench Retail,0.7,115,0.5739130434782609,0.8604416510232349,0.5826086956521739,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_tau_bench_retail_t0.7.json
+TAU-bench Retail,0.9,115,0.5826086956521739,0.8145432825187023,0.5826086956521739,/data/wanghy/agent_traj/deliberation_controller/eval/results_threshold_tau_bench_retail_t0.9.json
