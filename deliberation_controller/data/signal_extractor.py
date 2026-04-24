@@ -143,9 +143,13 @@ def extract_all_step_signals(steps: Sequence[Mapping[str, object]]) -> List[Dict
     return [extract_step_signals(steps, idx) for idx in range(len(steps))]
 
 
-def signals_to_vector(signals: Mapping[str, float]) -> List[float]:
+def signals_to_vector(
+    signals: Mapping[str, float],
+    signal_names: Sequence[str] | None = None,
+) -> List[float]:
     """Convert signal dict to fixed-order vector for model input."""
-    return [float(signals[name]) for name in SIGNAL_NAMES]
+    names = SIGNAL_NAMES if signal_names is None else signal_names
+    return [float(signals[name]) for name in names]
 
 
 def extract_signals_for_trajectory(trajectory: Mapping[str, object]) -> List[Dict[str, float]]:

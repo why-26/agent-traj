@@ -5,20 +5,20 @@
   "num_experiments": 8,
   "results": [
     {
-      "dataset_name": "hotpotqa_qwen3_4b_layer1",
-      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_real_intervention_hotpotqa.json",
-      "num_test_trajectories": 741,
-      "no_control_success_rate": 0.1767881241565452,
-      "controller_success_rate": 0.18083670715249664,
-      "no_control_avg_token": 21579.493927125506,
-      "controller_avg_token": 17276.76626180837,
-      "token_saving_rate": 0.19938964647862248,
+      "dataset_name": "hotpotqa_qwen3_4b",
+      "result_path": "/data/wanghy/agent_traj/deliberation_controller/eval/results_cross_hotpotqa_qwen3_4b.json",
+      "num_test_trajectories": 7405,
+      "no_control_success_rate": 0.19081701553004726,
+      "controller_success_rate": 0.1913571910871033,
+      "no_control_avg_token": 21987.69372045915,
+      "controller_avg_token": 17050.740850776514,
+      "token_saving_rate": 0.22453254681680826,
       "intervention_distribution": {
-        "continue": 4933,
-        "compress": 373,
-        "stop": 26,
-        "mode_switch": 73,
-        "redirect": 8
+        "continue": 48406,
+        "mode_switch": 1175,
+        "compress": 4143,
+        "stop": 224,
+        "redirect": 36
       }
     },
     {

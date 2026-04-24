@@ -15,7 +15,7 @@ from .normalizer import (
     load_trajectories,
     save_reference_distribution,
 )
-from .signal_extractor import SIGNAL_NAMES, extract_all_step_signals, signals_to_vector
+from .signal_extractor import extract_all_step_signals, signals_to_vector
 
 ACTION_COMPRESS = 0
 ACTION_REDIRECT = 1
@@ -27,6 +27,7 @@ DEFAULT_GATE_SIGNALS: Tuple[str, ...] = (
     "thought_length_var",
     "tokens_per_step",
 )
+INPUT_SIGNAL_NAMES: Tuple[str, ...] = DEFAULT_GATE_SIGNALS
 GATE_PERCENTILE = 90.0
 ACTION_OSCILLATION_PERCENTILE = 75.0
 ACTION_STOP_MEAN_PERCENTILE = 90.0
@@ -153,7 +154,10 @@ def build_samples_for_trajectory(
 
         samples.append(
             {
-                "signals": [signals_to_vector(step_sig) for step_sig in window],
+                "signals": [
+                    signals_to_vector(step_sig, signal_names=INPUT_SIGNAL_NAMES)
+                    for step_sig in window
+                ],
                 "gate_label": gate_label,
                 "action_label": action_label,
                 "meta": {
@@ -183,7 +187,7 @@ def prepare_dataset(
         "test": [],
         "meta": {
             "window_size": window_size,
-            "signal_order": SIGNAL_NAMES,
+            "signal_order": list(INPUT_SIGNAL_NAMES),
             "action_map": {
                 "Compress": ACTION_COMPRESS,
                 "Redirect": ACTION_REDIRECT,
