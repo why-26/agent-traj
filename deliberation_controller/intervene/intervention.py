@@ -76,7 +76,7 @@ class InterventionExecutor:
             f"中间冗余段摘要: 共省略 {max(omitted_respond - 1, 0)} 条连续 respond 交互，"
             "保留关键工具返回结果与最近上下文。"
         )
-        compressed_prompt = (
+        long_debug_prompt = (
             "【首步需求】\n"
             f"{first_req}\n\n"
             "【关键工具返回】\n"
@@ -86,7 +86,14 @@ class InterventionExecutor:
             "【最近3步完整历史】\n"
             f"{recent_text}"
         )
-        log = f"compress: kept first request + {len(tool_result_lines)} tool results + last 3 steps."
+        compressed_prompt = (
+            "Based on the preceding context (original task and recent tool results), "
+            "continue reasoning toward the answer. Avoid re-deriving prior steps."
+        )
+        log = (
+            f"compress: kept first request + {len(tool_result_lines)} tool results + last 3 steps. "
+            f"debug_long_prompt={long_debug_prompt}"
+        )
         return compressed_prompt, log
 
     def _build_redirect_text(self, history: Sequence[Mapping[str, object]]) -> tuple[str, str]:
@@ -198,4 +205,3 @@ class InterventionExecutor:
 
         result["intervention_log"] = f"unknown decision={decision}, treated as continue."
         return result
-
