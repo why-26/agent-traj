@@ -87,8 +87,10 @@ class InterventionExecutor:
             f"{recent_text}"
         )
         compressed_prompt = (
-            "Based on the preceding context (original task and recent tool results), "
-            "continue reasoning toward the answer. Avoid re-deriving prior steps."
+            "You have already searched and gathered evidence in prior steps "
+            "(kept above as tool results). Based on these results alone, "
+            "commit to your best answer now in the format \\boxed{...}. "
+            "Do not initiate new search queries unless absolutely necessary."
         )
         log = (
             f"compress: kept first request + {len(tool_result_lines)} tool results + last 3 steps. "
