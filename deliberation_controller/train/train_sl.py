@@ -20,6 +20,9 @@ from deliberation_controller.model.controller_single_head import DeliberationSin
 
 ACTION_NAMES = {0: "Compress", 1: "Redirect", 2: "ModeSwitch", 3: "Stop"}
 CONTINUE_CLASS_ID = 4
+# Fixed action class weights (Compress, Redirect, ModeSwitch, Stop).
+# Continue is modeled by gate=0 and therefore does not enter action CE directly.
+ACTION_CLASS_WEIGHTS = torch.tensor([8.5, 25.0, 6.0, 6.0], dtype=torch.float32)
 
 
 class TrajectoryWindowDataset(Dataset):
@@ -110,6 +113,8 @@ def evaluate(
     pred_count = Counter()
     true_count = Counter()
 
+    class_weights = ACTION_CLASS_WEIGHTS.to(device)
+
     with torch.no_grad():
         for batch in dataloader:
             signals = batch["signals"].to(device)
@@ -124,7 +129,14 @@ def evaluate(
                 pred_gate = (pred_overall != CONTINUE_CLASS_ID).float()
             else:
                 gate_prob, action_logits = model(signals)
-                loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
+                gate_loss = nn.functional.binary_cross_entropy(gate_prob, gate_label)
+                action_loss = nn.functional.cross_entropy(
+                    action_logits,
+                    action_label,
+                    ignore_index=-100,
+                    weight=class_weights,
+                )
+                loss = gate_loss + action_loss
                 pred_gate = (gate_prob >= gate_threshold).float()
                 pred_overall = build_pred_overall_class(gate_prob, action_logits, gate_threshold)
 
@@ -203,6 +215,8 @@ def train_one_epoch(
     running_loss = 0.0
     total_samples = 0
 
+    class_weights = ACTION_CLASS_WEIGHTS.to(device)
+
     for batch in dataloader:
         signals = batch["signals"].to(device)
         gate_label = batch["gate_label"].to(device)
@@ -213,7 +227,14 @@ def train_one_epoch(
             loss = model.compute_loss(class_logits, gate_label, action_label)
         else:
             gate_prob, action_logits = model(signals)
-            loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
+            gate_loss = nn.functional.binary_cross_entropy(gate_prob, gate_label)
+            action_loss = nn.functional.cross_entropy(
+                action_logits,
+                action_label,
+                ignore_index=-100,
+                weight=class_weights,
+            )
+            loss = gate_loss + action_loss
 
         optimizer.zero_grad()
         loss.backward()
