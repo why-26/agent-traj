@@ -35,6 +35,7 @@ class AgentWithController:
         self.k = int(self.agent_config.get("window_size", 5))
         self.gate_threshold = float(self.agent_config.get("gate_threshold", 0.5))
         self.device = torch.device(self.agent_config.get("device", "cpu"))
+        self.intervention_cooldown = int(self.agent_config.get("intervention_cooldown", 5))
 
         self.controller = DeliberationController(
             signal_dim=5,
@@ -61,6 +62,7 @@ class AgentWithController:
         self.intervention_logs: List[Dict[str, object]] = []
         self.total_steps = 0
         self.total_estimated_token_saving = 0.0
+        self.last_intervention_step: int = -self.intervention_cooldown  # 初始时不在冷却期
 
     def _predict_decision(self, signal_window_norm: Sequence[Sequence[float]]) -> int:
         x = torch.tensor([signal_window_norm], dtype=torch.float32, device=self.device)
@@ -90,6 +92,8 @@ class AgentWithController:
 
         if len(self.signal_buffer_norm) < self.k:
             decision = 0
+        elif step_idx - self.last_intervention_step < self.intervention_cooldown:
+            decision = 0  # 冷却期内强制 continue
         else:
             decision = self._predict_decision(list(self.signal_buffer_norm))
 
@@ -98,6 +102,9 @@ class AgentWithController:
             history=self.history,
             agent_config=self.agent_config,
         )
+
+        if decision != 0:
+            self.last_intervention_step = step_idx
 
         # Offline token saving estimator for compress.
         estimated_saving = 0.0

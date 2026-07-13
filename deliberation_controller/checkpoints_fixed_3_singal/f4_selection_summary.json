@@ -1,0 +1,87 @@
+{
+  "formula": "0.45*val_gate_f1 + 0.35*val_overall_accuracy + 0.20*val_stop_precision",
+  "rankings": [
+    {
+      "config": "A_vanilla",
+      "seed": 42,
+      "composite": 0.7324125230202578,
+      "gate_f1": 0.6666666666666666,
+      "overall_acc": 0.85451197053407,
+      "stop_prec": 0.6666666666666666,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed42/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed42/training_log.json"
+    },
+    {
+      "config": "B_weighted",
+      "seed": 44,
+      "composite": 0.6744579302184113,
+      "gate_f1": 0.621082621082621,
+      "overall_acc": 0.8259668508287292,
+      "stop_prec": 0.5294117647058824,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed44/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed44/training_log.json"
+    },
+    {
+      "config": "B_weighted",
+      "seed": 43,
+      "composite": 0.6085107202030093,
+      "gate_f1": 0.6086956521739131,
+      "overall_acc": 0.8241252302025782,
+      "stop_prec": 0.23076923076923078,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed43/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed43/training_log.json"
+    },
+    {
+      "config": "A_vanilla",
+      "seed": 44,
+      "composite": 0.5827773345175907,
+      "gate_f1": 0.6376021798365122,
+      "overall_acc": 0.8453038674033149,
+      "stop_prec": 0.0,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed44/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed44/training_log.json"
+    },
+    {
+      "config": "B_weighted",
+      "seed": 42,
+      "composite": 0.5521389800468021,
+      "gate_f1": 0.3609022556390977,
+      "overall_acc": 0.8278084714548803,
+      "stop_prec": 0.5,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed42/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed42/training_log.json"
+    },
+    {
+      "config": "A_vanilla",
+      "seed": 43,
+      "composite": 0.5422325516423493,
+      "gate_f1": 0.5510835913312694,
+      "overall_acc": 0.8406998158379374,
+      "stop_prec": 0.0,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed43/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed43/training_log.json"
+    }
+  ],
+  "top2": [
+    {
+      "config": "A_vanilla",
+      "seed": 42,
+      "composite": 0.7324125230202578,
+      "gate_f1": 0.6666666666666666,
+      "overall_acc": 0.85451197053407,
+      "stop_prec": 0.6666666666666666,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed42/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/A_vanilla_seed42/training_log.json"
+    },
+    {
+      "config": "B_weighted",
+      "seed": 44,
+      "composite": 0.6744579302184113,
+      "gate_f1": 0.621082621082621,
+      "overall_acc": 0.8259668508287292,
+      "stop_prec": 0.5294117647058824,
+      "ckpt_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed44/best_controller.pt",
+      "log_path": "/mnt/dolphinfs/ssd_pool/docker/user/hadoop-ai-search/baokailin/agent-traj/deliberation_controller/checkpoints_fixed/B_weighted_seed44/training_log.json"
+    }
+  ]
+}

@@ -27,18 +27,12 @@ DEFAULT_GATE_SIGNALS: Tuple[str, ...] = (
     "thought_length_var",
     "tokens_per_step",
 )
-INPUT_SIGNAL_NAMES: Tuple[str, ...] = (
-    "thought_length_mean",
-    "thought_length_var",
-    "tokens_per_step",
-    "decision_oscillation",
-    "consecutive_failure_count",
-)
+INPUT_SIGNAL_NAMES: Tuple[str, ...] = DEFAULT_GATE_SIGNALS
 GATE_PERCENTILE = 90.0
 ACTION_OSCILLATION_PERCENTILE = 75.0
 ACTION_STOP_MEAN_PERCENTILE = 90.0
 ACTION_STOP_VAR_PERCENTILE = 85.0
-ACTION_REDIRECT_FAILURE_COUNT = 3.0
+ACTION_REDIRECT_FAILURE_COUNT = 5.0
 
 
 @dataclass

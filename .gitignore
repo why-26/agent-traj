@@ -30,7 +30,7 @@ deliberation_controller/data/*.json
 
 # Large raw trajectory datasets
 agent 推理轨迹数据集/
-data/*.json
+# data/*.json
 *.triples.json
 
 # Analysis outputs and temporary files

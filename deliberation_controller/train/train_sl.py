@@ -5,13 +5,16 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Mapping, Tuple
+from typing import Dict, List, Mapping, Optional, Tuple
 
+import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
 from deliberation_controller.model.controller import DeliberationController
@@ -47,11 +50,66 @@ class TrajectoryWindowDataset(Dataset):
 class EvalResult:
     loss: float
     gate_accuracy: float
+    gate_f1: float
     action_accuracy: float
     overall_accuracy: float
+    stop_precision: float
     action_precision: Dict[int, float]
     action_recall: Dict[int, float]
     action_support: Dict[int, int]
+
+
+def set_seed(seed: int) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+
+
+def build_action_class_weights(
+    train_samples: List[Mapping[str, object]],
+    device: torch.device,
+) -> torch.Tensor:
+    """Strict inverse frequency, normalized so weights.sum() == n_classes."""
+    train_actions = [
+        int(e["action_label"])
+        for e in train_samples
+        if int(e["action_label"]) != -100
+    ]
+    counts = Counter(train_actions)
+    n_classes = 4
+
+    weights = torch.zeros(n_classes)
+    for cls in range(n_classes):
+        n = counts.get(cls, 1)
+        weights[cls] = 1.0 / n
+    weights = weights / weights.sum() * n_classes
+
+    action_names = ["Compress", "Redirect", "ModeSwitch", "Stop"]
+    print("Class weights (strict inverse frequency):")
+    for name, w, c in zip(action_names, weights.tolist(), [counts.get(i, 0) for i in range(4)]):
+        print(f"  {name}: weight={w:.3f} (count={c})")
+    return weights.to(device)
+
+
+def compute_dual_head_loss(
+    gate_prob: torch.Tensor,
+    action_logits: torch.Tensor,
+    gate_label: torch.Tensor,
+    action_label: torch.Tensor,
+    action_weights: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    gate_loss = F.binary_cross_entropy(gate_prob, gate_label.float())
+    action_loss = F.cross_entropy(
+        action_logits,
+        action_label,
+        weight=action_weights,
+        ignore_index=-100,
+        reduction="mean",
+    )
+    return gate_loss + action_loss
 
 
 def build_true_overall_class(gate_label: torch.Tensor, action_label: torch.Tensor) -> torch.Tensor:
@@ -95,12 +153,14 @@ def evaluate(
     device: torch.device,
     gate_threshold: float,
     model_type: str = "attention",
+    action_weights: Optional[torch.Tensor] = None,
 ) -> EvalResult:
     model.eval()
     total_loss = 0.0
     total_samples = 0
     gate_correct = 0
     gate_total = 0
+    gate_tp = gate_fp = gate_fn = 0
     action_correct = 0
     action_total = 0
     overall_correct = 0
@@ -124,7 +184,13 @@ def evaluate(
                 pred_gate = (pred_overall != CONTINUE_CLASS_ID).float()
             else:
                 gate_prob, action_logits = model(signals)
-                loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
+                loss = compute_dual_head_loss(
+                    gate_prob,
+                    action_logits,
+                    gate_label,
+                    action_label,
+                    action_weights=action_weights,
+                )
                 pred_gate = (gate_prob >= gate_threshold).float()
                 pred_overall = build_pred_overall_class(gate_prob, action_logits, gate_threshold)
 
@@ -134,6 +200,11 @@ def evaluate(
 
             gate_correct += int((pred_gate == gate_label).sum().item())
             gate_total += batch_size
+            gate_true = (gate_label >= 0.5).long()
+            gate_pred = (pred_gate >= 0.5).long()
+            gate_tp += int(((gate_pred == 1) & (gate_true == 1)).sum().item())
+            gate_fp += int(((gate_pred == 1) & (gate_true == 0)).sum().item())
+            gate_fn += int(((gate_pred == 0) & (gate_true == 1)).sum().item())
 
             gate_mask = gate_label == 1
             if gate_mask.any():
@@ -165,13 +236,23 @@ def evaluate(
 
     avg_loss = total_loss / max(total_samples, 1)
     gate_acc = gate_correct / max(gate_total, 1)
+    gate_precision = gate_tp / (gate_tp + gate_fp) if (gate_tp + gate_fp) else 0.0
+    gate_recall = gate_tp / (gate_tp + gate_fn) if (gate_tp + gate_fn) else 0.0
+    gate_f1 = (
+        2.0 * gate_precision * gate_recall / (gate_precision + gate_recall)
+        if (gate_precision + gate_recall)
+        else 0.0
+    )
     action_acc = action_correct / max(action_total, 1)
     overall_acc = overall_correct / max(overall_total, 1)
+    stop_precision = action_precision.get(3, 0.0)
     return EvalResult(
         loss=avg_loss,
         gate_accuracy=gate_acc,
+        gate_f1=gate_f1,
         action_accuracy=action_acc,
         overall_accuracy=overall_acc,
+        stop_precision=stop_precision,
         action_precision=action_precision,
         action_recall=action_recall,
         action_support=action_support,
@@ -198,6 +279,7 @@ def train_one_epoch(
     optimizer: torch.optim.Optimizer,
     device: torch.device,
     model_type: str = "attention",
+    action_weights: Optional[torch.Tensor] = None,
 ) -> float:
     model.train()
     running_loss = 0.0
@@ -213,7 +295,13 @@ def train_one_epoch(
             loss = model.compute_loss(class_logits, gate_label, action_label)
         else:
             gate_prob, action_logits = model(signals)
-            loss = model.compute_loss(gate_prob, action_logits, gate_label, action_label)
+            loss = compute_dual_head_loss(
+                gate_prob,
+                action_logits,
+                gate_label,
+                action_label,
+                action_weights=action_weights,
+            )
 
         optimizer.zero_grad()
         loss.backward()
@@ -229,6 +317,7 @@ def train_one_epoch(
 def create_dataloaders(
     data_path: str,
     batch_size: int,
+    seed: Optional[int] = None,
 ) -> Tuple[
     DataLoader,
     DataLoader,
@@ -244,7 +333,17 @@ def create_dataloaders(
     val_samples = data.get("val", [])
     test_samples = data.get("test", [])
 
-    train_loader = DataLoader(TrajectoryWindowDataset(train_samples), batch_size=batch_size, shuffle=True)
+    generator = None
+    if seed is not None:
+        generator = torch.Generator()
+        generator.manual_seed(seed)
+
+    train_loader = DataLoader(
+        TrajectoryWindowDataset(train_samples),
+        batch_size=batch_size,
+        shuffle=True,
+        generator=generator,
+    )
     val_loader = DataLoader(TrajectoryWindowDataset(val_samples), batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(TrajectoryWindowDataset(test_samples), batch_size=batch_size, shuffle=False)
     signal_dim = 0
@@ -302,6 +401,17 @@ def parse_args() -> argparse.Namespace:
         choices=("attention", "mlp", "single_head"),
         help="Controller backbone type.",
     )
+    parser.add_argument(
+        "--use_class_weights",
+        action="store_true",
+        help="Use class weights = strict inverse frequency for action CE.",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for reproducibility.",
+    )
     return parser.parse_args()
 
 
@@ -340,19 +450,38 @@ def format_action_metrics(result: EvalResult) -> str:
     return "\n".join(lines)
 
 
+def eval_result_to_dict(result: EvalResult) -> Dict[str, float]:
+    return {
+        "loss": result.loss,
+        "gate_accuracy": result.gate_accuracy,
+        "val_gate_f1": result.gate_f1,
+        "action_accuracy": result.action_accuracy,
+        "val_overall_accuracy": result.overall_accuracy,
+        "val_stop_precision": result.stop_precision,
+    }
+
+
 def main() -> None:
     args = parse_args()
+    set_seed(args.seed)
+
     os.makedirs(args.save_dir, exist_ok=True)
-    best_model_path = str(Path(args.save_dir) / f"best_controller_{args.model_type}.pt")
+    best_model_path = str(Path(args.save_dir) / "best_controller.pt")
+    training_log_path = str(Path(args.save_dir) / "training_log.json")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
+    print(f"Using device: {device} (seed={args.seed}, use_class_weights={args.use_class_weights})")
 
     train_loader, val_loader, test_loader, splits, signal_dim, num_steps = create_dataloaders(
         args.data_path,
         args.batch_size,
+        seed=args.seed,
     )
     print_dataset_stats(splits)
+
+    action_weights: Optional[torch.Tensor] = None
+    if args.use_class_weights:
+        action_weights = build_action_class_weights(splits["train"], device)
 
     model = build_model(args.model_type, signal_dim=signal_dim, num_steps=num_steps).to(device)
     n_params = sum(p.numel() for p in model.parameters())
@@ -364,7 +493,9 @@ def main() -> None:
 
     best_val_overall = -1.0
     best_epoch = -1
+    best_epoch_metrics: Dict[str, float] = {}
     no_improve_epochs = 0
+    epoch_history: List[Dict[str, object]] = []
 
     for epoch in range(1, args.epochs + 1):
         train_loss = train_one_epoch(
@@ -373,6 +504,7 @@ def main() -> None:
             optimizer,
             device,
             model_type=args.model_type,
+            action_weights=action_weights,
         )
         val_result = evaluate(
             model,
@@ -380,20 +512,27 @@ def main() -> None:
             device,
             args.gate_threshold,
             model_type=args.model_type,
+            action_weights=action_weights,
         )
+
+        epoch_metrics = eval_result_to_dict(val_result)
+        epoch_history.append({"epoch": epoch, "train_loss": train_loss, **epoch_metrics})
 
         print(
             f"Epoch {epoch:03d} | "
             f"train_loss={train_loss:.4f} | "
             f"val_loss={val_result.loss:.4f} | "
             f"gate_acc={val_result.gate_accuracy:.4f} | "
+            f"gate_f1={val_result.gate_f1:.4f} | "
             f"action_acc={val_result.action_accuracy:.4f} | "
-            f"overall_acc={val_result.overall_accuracy:.4f}"
+            f"overall_acc={val_result.overall_accuracy:.4f} | "
+            f"stop_prec={val_result.stop_precision:.4f}"
         )
 
         if val_result.overall_accuracy > best_val_overall:
             best_val_overall = val_result.overall_accuracy
             best_epoch = epoch
+            best_epoch_metrics = epoch_metrics
             no_improve_epochs = 0
             torch.save(
                 {
@@ -401,6 +540,8 @@ def main() -> None:
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
                     "val_overall_accuracy": val_result.overall_accuracy,
+                    "val_gate_f1": val_result.gate_f1,
+                    "val_stop_precision": val_result.stop_precision,
                     "args": vars(args),
                 },
                 best_model_path,
@@ -415,6 +556,18 @@ def main() -> None:
             )
             break
 
+    training_log = {
+        "data_path": args.data_path,
+        "seed": args.seed,
+        "use_class_weights": args.use_class_weights,
+        "best_epoch": best_epoch,
+        "best_epoch_metrics": best_epoch_metrics,
+        "epoch_history": epoch_history,
+    }
+    with open(training_log_path, "w", encoding="utf-8") as f:
+        json.dump(training_log, f, indent=2)
+    print(f"Wrote training log: {training_log_path}")
+
     print(f"Best model from epoch {best_epoch} with val overall_accuracy={best_val_overall:.4f}")
     checkpoint = torch.load(best_model_path, map_location=device)
     model.load_state_dict(checkpoint["model_state_dict"])
@@ -425,6 +578,7 @@ def main() -> None:
         device,
         args.gate_threshold,
         model_type=args.model_type,
+        action_weights=action_weights,
     )
     print("\nTest Results:")
     print(f"  loss:            {test_result.loss:.4f}")

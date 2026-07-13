@@ -69,13 +69,14 @@ def _is_failure_observation(observation: str) -> bool:
         return True
     if lower.startswith("error"):
         return True
+    if "nothing happens" in lower:
+        return True
     return False
 
 
 def _compute_consecutive_failure_count(steps: Iterable[Mapping[str, object]]) -> float:
     max_streak = 0
     streak = 0
-    prev_failed_action = ""
 
     for step in steps:
         action = _get_action(step)
@@ -83,15 +84,10 @@ def _compute_consecutive_failure_count(steps: Iterable[Mapping[str, object]]) ->
         is_failed = bool(action) and _is_failure_observation(observation)
 
         if is_failed:
-            if action == prev_failed_action:
-                streak += 1
-            else:
-                streak = 1
-            prev_failed_action = action
+            streak += 1
             max_streak = max(max_streak, streak)
         else:
             streak = 0
-            prev_failed_action = ""
 
     return float(max_streak)
 

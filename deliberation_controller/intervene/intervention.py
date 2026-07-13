@@ -200,9 +200,12 @@ class InterventionExecutor:
             return result
 
         if decision == 4:
-            answer, log = self._extract_answer_from_history(history)
-            result["extracted_answer"] = answer
-            result["intervention_log"] = log
+            result["modified_prompt"] = (
+                "You have gathered sufficient information from your searches. "
+                "This is your FINAL step — provide your definitive answer now "
+                "in the format \\boxed{YOUR_ANSWER}. Do not perform any more searches."
+            )
+            result["intervention_log"] = "stop: injecting conclude instruction, awaiting one final model step."
             return result
 
         result["intervention_log"] = f"unknown decision={decision}, treated as continue."
